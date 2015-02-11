@@ -62,6 +62,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.nio.file.Files;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -1122,7 +1123,8 @@ public class Wallet extends BaseTaggableObject implements Serializable, BlockCha
             stream.getFD().sync();
             stream.close();
             stream = null;
-            if (Utils.isWindows()) {
+            Files.copy(temp.toPath(), destFile.toPath());
+            /*if (Utils.isWindows()) {
                 // Work around an issue on Windows whereby you can't rename over existing files.
                 File canonical = destFile.getCanonicalFile();
                 if (canonical.exists() && !canonical.delete())
@@ -1132,7 +1134,7 @@ public class Wallet extends BaseTaggableObject implements Serializable, BlockCha
                 throw new IOException("Failed to rename " + temp + " to " + canonical);
             } else if (!temp.renameTo(destFile)) {
                 throw new IOException("Failed to rename " + temp + " to " + destFile);
-            }
+            }*/
         } catch (RuntimeException e) {
             log.error("Failed whilst saving wallet", e);
             throw e;

@@ -321,6 +321,7 @@ public class WalletAppKit extends AbstractIdleService {
 
         maybeMoveOldWalletOutOfTheWay();
 
+        vWalletFile=new File(vWalletFile.getCanonicalPath());
         if (vWalletFile.exists()) {
             wallet = loadWallet(shouldReplayWallet);
         } else {
