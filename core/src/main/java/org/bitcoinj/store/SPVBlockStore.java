@@ -38,6 +38,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
+import java.nio.file.Files;
+
 /**
  * An SPVBlockStore holds a limited number of block headers in a memory mapped ring buffer. With such a store, you
  * may not be able to process very deep re-orgs and could be disconnected from the chain (requiring a replay),
@@ -97,7 +99,11 @@ public class SPVBlockStore implements BlockStore {
             this.numHeaders = DEFAULT_NUM_HEADERS;
             boolean exists = file.exists();
             // Set up the backing file.
-            randomAccessFile = new RandomAccessFile(file, "rw");
+            if(!exists){
+                Files.createFile(file.toPath());
+            }
+            //File f=new File(file.getCanonicalPath());
+            randomAccessFile = new RandomAccessFile(file.getCanonicalPath(), "rw");
             long fileSize = getFileSize();
             if (!exists) {
                 log.info("Creating new SPV block chain file " + file);
